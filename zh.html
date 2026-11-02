@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PTPN11 表型分型计算器</title>
+<style>
+:root{--ink:#1e2d3a;--muted:#63717d;--navy:#244f73;--line:#dce3e8;--paper:#fff;--wash:#f5f7f9;--c1:#1f4e78;--c2:#c55a11;--c3:#328278}
+*{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;font-size:14px;line-height:1.55}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,summary:focus-visible{outline:3px solid #90b9d9;outline-offset:3px}
+.page{max-width:1160px;margin:0 auto;padding:34px 30px 25px}.topline{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.09em;color:var(--navy)}.offline{color:var(--muted);letter-spacing:0}
+header{padding:24px 0 23px}h1{margin:0 0 7px;font-size:29px;letter-spacing:.01em;font-weight:650}.subtitle{margin:0;color:var(--muted);font-size:14px}
+.layout{display:grid;grid-template-columns:1.14fr 1fr;gap:22px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}.panel-head{padding:19px 23px 15px;border-bottom:1px solid var(--line)}h2{margin:0 0 4px;font-size:17px;font-weight:650}.hint{margin:0;color:var(--muted);font-size:12px}.form-body{padding:0 23px}
+.feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:17px 0;border-bottom:1px solid #edf0f3}.feature:last-child{border:0}.feature-name{font-weight:550;font-size:14px}.feature-en{display:block;color:var(--muted);font-size:11px;font-weight:400;margin-top:2px;line-height:1.4}
+.choices{display:flex;border:1px solid #cad4dc;border-radius:6px;overflow:hidden}.choice{position:relative;display:block;cursor:pointer}.choice:not(:last-child){border-right:1px solid #cad4dc}.choice input{position:absolute;opacity:0;width:1px;height:1px}.choice span{display:block;padding:7px 13px;background:#fff;color:#5d6a75;font-size:12px;min-width:44px;text-align:center}.choice input:checked+span{background:#e8f0f6;color:#153f61;font-weight:650}.choice input:focus-visible+span{box-shadow:inset 0 0 0 2px #4f85ad}
+.form-bottom{display:flex;align-items:center;gap:9px;padding:15px 23px;border-top:1px solid var(--line);background:#fcfdfe}.btn{border:1px solid #bdcbd5;background:white;color:var(--navy);border-radius:5px;padding:7px 12px;font-size:12px;line-height:1.5}.btn:hover{background:#edf3f8}.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}.btn.primary:hover{background:#1d4262}.btn:disabled{opacity:.4;cursor:default}.push{margin-left:auto}
+.result-head{display:flex;justify-content:space-between;align-items:center}.count{font-size:12px;padding:4px 9px;background:#f0f4f7;border-radius:4px;color:var(--muted);white-space:nowrap}.result-body{padding:22px 23px 19px;min-height:413px}.empty{min-height:362px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;color:var(--muted)}.empty-icon{width:52px;height:52px;margin-bottom:15px;color:#91a4b2}.empty h3{font-size:16px;font-weight:500;margin:0 0 6px;color:#4d6273}.empty p{font-size:12px;max-width:250px;margin:0}
+.eyebrow{font-size:12px;color:var(--muted);margin-bottom:4px}.result-main{display:flex;justify-content:space-between;align-items:baseline;gap:16px}.result-class{font-size:39px;line-height:1.2;font-weight:650;letter-spacing:-.025em;color:var(--navy)}.max-prob{text-align:right}.max-value{font-size:29px;font-weight:600;line-height:1.25;color:var(--ink)}.max-label{color:var(--muted);font-size:11px}.certainty{display:inline-block;margin:14px 0 20px;padding:5px 9px;font-size:12px;border-radius:4px;background:#eaf3f0;color:#35675b}.certainty.low{background:#fbf0e5;color:#986125}.prob-title{font-size:12px;color:var(--muted);margin-bottom:11px}.prob-row{margin-bottom:15px}.prob-meta{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:5px}.prob-label{font-weight:500}.prob-value{font-variant-numeric:tabular-nums}.track{height:8px;border-radius:3px;background:#edf1f4;overflow:hidden}.bar{height:100%;width:0;transition:width .2s ease;background:var(--c1)}.prob-row[data-class="2"] .bar{background:var(--c2)}.prob-row[data-class="3"] .bar{background:var(--c3)}
+.result-note{border-top:1px solid var(--line);padding-top:14px;margin:18px 0 0;color:var(--muted);font-size:12px}.result-note.incomplete{color:#8c653b}.result-tools{display:flex;gap:8px;padding:15px 23px;border-top:1px solid var(--line);background:#fcfdfe}.copy-status{margin-left:auto;font-size:11px;color:var(--muted);align-self:center}.explain{margin-top:16px;padding:15px 19px;background:#f0f4f7;border:1px solid #dce5ed;border-radius:8px;color:#5d6b77;font-size:12px}.explain strong{display:block;margin-bottom:5px;color:#344d62;font-weight:600}.profile-card{border-left:3px solid var(--navy);background:#f5f8fa;margin:15px 0 0;padding:12px 14px;border-radius:0 5px 5px 0}.profile-kicker{color:var(--muted);font-size:11px;margin:0 0 4px}.profile-title{font-size:15px;font-weight:650;margin:0 0 6px;line-height:1.4}.profile-description{font-size:12px;margin:0;color:#4f6272}.profile-focus{font-size:12px;margin:9px 0 0;padding-top:8px;border-top:1px solid #dce5eb;color:#40596c}.clinical-note{font-size:12px;color:#5d6b77;border-top:1px solid var(--line);margin:16px 0 0;padding-top:12px}.clinical-note strong{color:#344d62}.interpretation-alert{font-size:12px;color:#8c653b;margin:10px 0 0}
+details{margin-top:22px;padding:15px 20px;background:#fff;border:1px solid var(--line);border-radius:8px}summary{cursor:pointer;font-size:13px;font-weight:550;color:#3e5669}.details-body{padding-top:9px;color:var(--muted);font-size:12px}.details-body p{margin:8px 0}.details-body ul{margin:7px 0;padding-left:18px}.details-body li{margin:6px 0}.details-body code{color:#365c7c}footer{display:flex;justify-content:space-between;gap:12px;margin-top:18px;color:#7a8791;font-size:11px}.hide{display:none!important}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.page{padding:22px 18px}header{padding:21px 0}h1{font-size:25px}.result-body{min-height:0}.empty{min-height:230px}.result-main{justify-content:flex-start}.max-prob{margin-left:auto}.result-tools{flex-wrap:wrap}}
+@media(max-width:430px){.page{padding:16px 12px}.panel-head{padding:16px}.form-body{padding:0 16px}.feature{gap:8px}.choice span{padding:7px 9px;min-width:36px}.feature-en{max-width:165px}.form-bottom{padding:13px 16px}.offline{font-size:10px}.result-body{padding:19px 17px}.result-tools{padding:13px 17px}}
+@media print{body{background:#fff}.page{padding:0;max-width:none}.form-bottom,.result-tools,details,footer,.offline{display:none}.layout{grid-template-columns:1.1fr 1fr;gap:15px}.panel{break-inside:avoid}.track,.choice input:checked+span,.certainty{-webkit-print-color-adjust:exact;print-color-adjust:exact}.feature{padding:13px 0}.result-body{min-height:0}header{padding:17px 0}.explain{background:white}}
+</style>
+</head>
+<body>
+<main class="page">
+ <div class="topline"><span>PTPN11 · PHENOTYPE PROFILES</span><a href="index.html" style="margin-left:auto;margin-right:18px;color:inherit;text-decoration:none">English</a><span class="offline">离线运行 · 无需上传数据</span></div>
+ <header><h1>PTPN11 表型分型计算器</h1><p class="subtitle">基于六指标冻结三类模型，计算当前表型组合的类别归属概率。</p></header>
+ <div class="layout">
+  <section class="panel" aria-labelledby="input-heading">
+   <div class="panel-head"><h2 id="input-heading">1. 选择六项表型</h2><p class="hint">“无”需有明确阴性记录；未报告或未评估请选择“未知”。</p></div>
+   <form id="phenotype-form" class="form-body"></form>
+   <div class="form-bottom"><button class="btn primary" id="example" type="button">查看示例</button><button class="btn" id="reset" type="button">全部重置</button><span class="hint push">选择后自动计算</span></div>
+  </section>
+  <div>
+   <section class="panel" aria-labelledby="output-heading">
+    <div class="panel-head result-head"><h2 id="output-heading">2. 查看归类结果</h2><span class="count" id="known-count">已知 0 / 6</span></div>
+    <div class="result-body" aria-live="polite" aria-atomic="true">
+     <div id="empty" class="empty"><svg class="empty-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="7" y="5" width="34" height="38" rx="5" stroke="currentColor" stroke-width="1.4"/><path d="M14 16h20M14 24h12M14 32h16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><h3>请选择患者的表型状态</h3><p>完成选择后，这里将显示最可能类别和三类后验概率。</p></div>
+     <div id="result" class="hide">
+      <div class="eyebrow">最匹配的表型谱</div><div class="result-main"><div class="result-class" id="assigned-class">—</div><div class="max-prob"><div class="max-value" id="maximum">—</div><div class="max-label">最大后验概率</div></div></div>
+      <section class="profile-card" id="profile-card" aria-labelledby="profile-title">
+       <p class="profile-kicker">这个类别意味着什么 · 研究队列中的表型特征</p>
+       <h3 class="profile-title" id="profile-title">—</h3>
+       <p class="profile-description" id="profile-description">—</p>
+       <p class="profile-focus"><strong>理解重点：</strong><span id="profile-focus">—</span></p>
+      </section>
+      <div class="certainty" id="certainty">—</div>
+      <p class="interpretation-alert hide" id="interpretation-alert">当前归类确定性较低，请同时参考三类概率；以下解释仅为暂定匹配。</p>
+      <div class="prob-title">三类归属概率</div>
+      <div id="probability-bars"></div>
+      <p class="result-note" id="completeness">—</p>
+      <p class="clinical-note"><strong>临床提示：</strong>分组概括当前表型组合，可辅助识别评估重点，不能替代Noonan综合征的常规多系统评估与随访，也不用于决定治疗。</p>
+     </div>
+    </div>
+    <div class="result-tools"><button class="btn" id="copy" type="button" disabled>复制结果</button><button class="btn" id="download" type="button" disabled>下载结果</button><button class="btn" id="print" type="button" disabled>打印</button><span id="copy-status" class="copy-status" role="status"></span></div>
+   </section>
+   <div class="explain"><strong>概率怎么理解？</strong>例如Class 2为94.2%，表示该表型组合在固定模型下最符合Class 2。它表示类别归属的确定程度，不表示疾病风险或治疗获益。</div>
+  </div>
+ </div>
+ <details><summary>模型说明与适用范围</summary><div class="details-body">
+  <p>本页面用于符合研究纳入范围的PTPN11相关Noonan综合征患者的研究性表型归类。模型基于437例开发队列，使用固定的三类混合比例与六项条件概率，不在页面内重新拟合。</p>
+  <ul><li>三类以Class 1、Class 2、Class 3表示。页面不根据类别推断预后或直接给出治疗建议。</li><li>未知指标不参与该项似然计算，不被当作阴性；资料不完整时应结合实际评估情况理解结果。</li><li>最大后验概率&lt;0.70表示归类确定性较低。该阈值用于描述分类确定性，不是诊断效能界值。</li><li>页面计算已与开发队列437例及外部队列86例的冻结模型输出核对，归类全部一致。这项核对验证计算实现的一致性，不等于完成前瞻性临床效能验证。</li></ul>
+  <p>来源：原始六指标K=3冻结模型。概率计算沿用既往外部评价中的数值边界处理（10<sup>−10</sup>）。版本：2026-11-03。</p>
+ </div></details>
+ <footer><span>Six-indicator latent class model · Research implementation</span><span>不采集患者身份信息</span></footer>
+</main>
+<script>
+'use strict';
+const FEATURES=[
+ {id:'facial_abnormality',cn:'面容异常',en:'Facial abnormality'},
+ {id:'short_stature',cn:'身材矮小',en:'Short stature'},
+ {id:'chest_deformity',cn:'胸廓畸形',en:'Chest deformity'},
+ {id:'hypertrophic_cardiomyopathy',cn:'肥厚型心肌病',en:'Hypertrophic cardiomyopathy · HCM'},
+ {id:'pulmonary_valve_stenosis',cn:'肺动脉瓣狭窄',en:'Pulmonary valve stenosis · PVS'},
+ {id:'neurodevelopmental_abnormality',cn:'神经发育异常',en:'Neurodevelopmental abnormality'}
+];
+const PROFILES=[
+ {title:'典型面容与胸廓特征较少',description:'典型面容和胸廓特征较少，表型构成对年龄限制更敏感，且较为异质。不能据此判断病情较轻或存在固定的心肌病风险。',focus:'结合年龄、已记录表现和资料完整性理解当前归类，并在随访中重新评估表型。'},
+ {title:'典型面容—身材矮小表型谱',description:'典型面容与身材矮小的组合突出，生长受累是这一表型谱的主要特征。',focus:'重视生长状况的评估，同时结合其他系统表现综合判断；类别本身不构成GH治疗指征。'},
+ {title:'心脏—胸廓表型谱',description:'以肺动脉瓣狭窄和胸廓异常的组合为特征；原始模型中身材矮小的估计概率接近零。',focus:'关注已记录的心脏与胸廓表现；当前匹配不能预测后续生长情况。'}
+];
+const MODEL={
+ priors:[0.216340491471176,0.607504021234248,0.176155487294576],
+ probabilities:[
+ [0.228089299935914,0.348550028943538,0.0360421448848414,0.228825044151841,0.289435549715694,0.278916886473869],
+ [0.94833278982686,0.999999999850804,0.403740526725365,0.0272919555393831,0.413974804155011,0.45657601689626],
+ [1,5.89822733117285e-11,0.571844795497045,0.199046350261271,0.664160324261714,0.420372531807357]
+ ],floor:1e-10
+};
+function predict(statuses){
+ if(!Array.isArray(statuses)||statuses.length!==6||statuses.some(s=>s!==null&&s!==1&&s!==2))throw new RangeError('Use six statuses: 2=present, 1=absent, null=unknown.');
+ const observed=statuses.filter(s=>s!==null).length;
+ if(observed===0)return {observed:0,probabilities:null,class:null,maximum:null};
+ const scores=MODEL.priors.map((prior,c)=>{
+  let value=Math.log(prior);
+  statuses.forEach((s,j)=>{if(s===null)return;const p=Math.min(1-MODEL.floor,Math.max(MODEL.floor,MODEL.probabilities[c][j]));value+=s===2?Math.log(p):Math.log1p(-p);});return value;
+ });
+ const largest=Math.max(...scores),weights=scores.map(s=>Math.exp(s-largest)),total=weights.reduce((a,b)=>a+b,0),probabilities=weights.map(s=>s/total);
+ const maximum=Math.max(...probabilities),assigned=probabilities.indexOf(maximum)+1;
+ return {observed,probabilities,class:assigned,maximum};
+}
+window.PTPN11=Object.freeze({predict,features:FEATURES,model:MODEL});
+const $=id=>document.getElementById(id),form=$('phenotype-form');
+FEATURES.forEach((f,i)=>{
+ const row=document.createElement('div');row.className='feature';
+ const name=document.createElement('div');name.className='feature-name';name.id=f.id+'-label';name.append(document.createTextNode(f.cn));const en=document.createElement('span');en.className='feature-en';en.textContent=f.en;name.append(en);
+ const choices=document.createElement('div');choices.className='choices';choices.setAttribute('role','radiogroup');choices.setAttribute('aria-labelledby',name.id);
+ [['2','有'],['1','无'],['unknown','未知']].forEach(([value,label])=>{const wrap=document.createElement('label');wrap.className='choice';const input=document.createElement('input');input.type='radio';input.name=f.id;input.value=value;input.checked=value==='unknown';const span=document.createElement('span');span.textContent=label;wrap.append(input,span);choices.append(wrap);});
+ row.append(name,choices);form.append(row);
+});
+for(let cl=1;cl<=3;cl++){
+ const row=document.createElement('div');row.className='prob-row';row.dataset.class=cl;
+ const meta=document.createElement('div');meta.className='prob-meta';const label=document.createElement('span');label.className='prob-label';label.textContent='Class '+cl;const value=document.createElement('span');value.id='prob-'+cl;value.className='prob-value';value.textContent='—';meta.append(label,value);
+ const track=document.createElement('div');track.className='track';const bar=document.createElement('div');bar.id='bar-'+cl;bar.className='bar';track.append(bar);row.append(meta,track);$('probability-bars').append(row);
+}
+let current=null,currentStatuses=[];
+function readStatuses(){return FEATURES.map(f=>{const raw=form.querySelector('input[name="'+f.id+'"]:checked').value;return raw==='unknown'?null:Number(raw);});}
+function formatProbability(p){return p>0&&p<.001?'<0.1%':(100*p).toFixed(1)+'%';}
+function update(){
+ currentStatuses=readStatuses();current=predict(currentStatuses);$('known-count').textContent='已知 '+current.observed+' / 6';$('copy-status').textContent='';
+ const active=current.observed>0;$('empty').classList.toggle('hide',active);$('result').classList.toggle('hide',!active);['copy','download','print'].forEach(id=>$(id).disabled=!active);
+ if(!active)return;
+ $('assigned-class').textContent='Class '+current.class;$('maximum').textContent=formatProbability(current.maximum);
+ const color=['var(--c1)','var(--c2)','var(--c3)'][current.class-1];
+ $('assigned-class').style.color=color;$('profile-card').style.borderLeftColor=color;
+ const profile=PROFILES[current.class-1];$('profile-title').textContent=profile.title;$('profile-description').textContent=profile.description;$('profile-focus').textContent=profile.focus;
+ $('interpretation-alert').classList.toggle('hide',current.maximum>=.7);
+ $('certainty').textContent=current.maximum<.7?'归类确定性较低 · 最大概率 <0.70':'最大后验概率 ≥0.70';$('certainty').classList.toggle('low',current.maximum<.7);
+ current.probabilities.forEach((p,i)=>{$('prob-'+(i+1)).textContent=formatProbability(p);$('bar-'+(i+1)).style.width=(100*p)+'%';});
+ $('completeness').textContent=current.observed===6?'六项状态均已记录。请结合完整临床资料理解归类结果。':'目前仅记录 '+current.observed+' 项；未知指标未作为阴性处理。建议补充六项表型评估。';$('completeness').classList.toggle('incomplete',current.observed<6);
+}
+function setStatuses(statuses){FEATURES.forEach((f,i)=>{const raw=statuses[i]===null?'unknown':String(statuses[i]);form.querySelector('input[name="'+f.id+'"][value="'+raw+'"]').checked=true;});update();}
+form.addEventListener('change',update);form.addEventListener('submit',e=>e.preventDefault());
+$('example').addEventListener('click',()=>setStatuses([2,2,1,1,1,1]));$('reset').addEventListener('click',()=>setStatuses([null,null,null,null,null,null]));
+function report(){
+ if(!current||current.observed===0)return '';
+ const rows=['PTPN11六指标冻结模型分型结果',''];FEATURES.forEach((f,i)=>rows.push(f.cn+'：'+(currentStatuses[i]===2?'有':currentStatuses[i]===1?'无':'未知')));
+ rows.push('','已知指标：'+current.observed+'/6','最匹配的表型谱：Class '+current.class,'最大后验概率：'+(current.maximum*100).toFixed(3)+'%','表型谱：'+PROFILES[current.class-1].title,'类别含义：'+PROFILES[current.class-1].description,'理解重点：'+PROFILES[current.class-1].focus);
+ current.probabilities.forEach((p,i)=>rows.push('Class '+(i+1)+'后验概率：'+(p*100).toFixed(3)+'%'));
+ rows.push('归类确定性：'+(current.maximum>=.7?'最大后验概率≥0.70':'最大后验概率<0.70'),'',...(current.maximum<.7?['当前归类确定性较低，请同时参考三类概率；以下解释仅为暂定匹配。']:[]),'临床提示：分组概括当前表型组合，可辅助识别评估重点，不能替代Noonan综合征的常规多系统评估与随访，也不用于决定治疗。','本结果用于研究性表型归类；未知指标未作为阴性处理。','模型版本：原始冻结K=3六指标模型；页面版本2026-11-03。');return rows.join('\n');
+}
+$('copy').addEventListener('click',async()=>{const text=report();try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const a=document.createElement('textarea');a.value=text;document.body.append(a);a.select();if(!document.execCommand('copy'))throw new Error('copy');a.remove();}$('copy-status').textContent='已复制';}catch(e){$('copy-status').textContent='复制受限，可点击“下载结果”';}});
+$('download').addEventListener('click',()=>{const blob=new Blob([report()],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PTPN11_classification_result.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$('print').addEventListener('click',()=>window.print());update();
+</script>
+</body>
+</html>
