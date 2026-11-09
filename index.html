@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PTPN11 phenotype class calculator</title>
+<title>PTPN11-related Noonan syndrome phenotype class calculator</title>
 <style>
 :root{--ink:#1e2d3a;--muted:#63717d;--navy:#244f73;--line:#dce3e8;--paper:#fff;--wash:#f5f7f9;--c1:#1f4e78;--c2:#c55a11;--c3:#328278}
 *{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;font-size:14px;line-height:1.55}
@@ -25,8 +25,8 @@ details{margin-top:22px;padding:15px 20px;background:#fff;border:1px solid var(-
 </head>
 <body>
 <main class="page">
- <div class="topline"><span>PTPN11 · PHENOTYPE PROFILES</span><a href="zh.html" style="margin-left:auto;margin-right:18px;color:inherit;text-decoration:none">中文版</a><span class="offline">Works offline · No data upload</span></div>
- <header><h1>PTPN11 phenotype class calculator</h1><p class="subtitle">Estimate class membership from six phenotypes using the frozen three-class model.</p></header>
+ <div class="topline"><span>PTPN11 · PHENOTYPE PROFILES</span><span class="offline">Works offline · No data upload</span></div>
+ <header><h1>PTPN11-related Noonan syndrome phenotype class calculator</h1><p class="subtitle">Estimate class membership from six phenotypes using the frozen three-class model.</p></header>
  <div class="layout">
   <section class="panel" aria-labelledby="input-heading">
    <div class="panel-head"><h2 id="input-heading">1. Enter phenotype status</h2><p class="hint">Select “No” only when absence is documented. Otherwise, select “Unknown”.</p></div>
@@ -51,20 +51,24 @@ details{margin-top:22px;padding:15px 20px;background:#fff;border:1px solid var(-
       <div class="prob-title">Class membership probabilities</div>
       <div id="probability-bars"></div>
       <p class="result-note" id="completeness">—</p>
-      <p class="clinical-note"><strong>Clinical note: </strong>Class assignment summarizes the current phenotype pattern and may help focus assessment. It does not replace standard multisystem assessment and surveillance for Noonan syndrome or determine treatment.</p>
+      <p class="clinical-note"><strong>Clinical note: </strong>The assigned profile can help clinicians identify which findings to review at the bedside and revisit during follow-up. It should be interpreted alongside standard multisystem assessment and surveillance for Noonan syndrome, using clinical judgment.</p>
      </div>
     </div>
     <div class="result-tools"><button class="btn" id="copy" type="button" disabled>Copy result</button><button class="btn" id="download" type="button" disabled>Download result</button><button class="btn" id="print" type="button" disabled>Print</button><span id="copy-status" class="copy-status" role="status"></span></div>
    </section>
-   <div class="explain"><strong>How to read the probabilities</strong>For example, 94.2% for Class 2 means this phenotype combination most closely matches Class 2 under the fixed model. It reflects assignment certainty, not disease risk or treatment benefit.</div>
+   <div class="explain"><strong>How to read the probabilities</strong>For example, 94.2% for Class 2 means this phenotype combination is most consistent with Class 2 under the fixed model. It reflects assignment certainty, not disease severity, prognosis, or treatment benefit.</div>
   </div>
  </div>
  <details><summary>About the model and its scope</summary><div class="details-body">
-  <p>This research tool assigns phenotype classes to patients with PTPN11-related Noonan syndrome who meet the study inclusion criteria. It uses fixed mixing proportions and six conditional phenotype probabilities from the 437-patient development cohort. The model is not refitted on this page.</p>
-  <ul><li>Classes are labelled Class 1, Class 2, and Class 3. This tool does not estimate prognosis or provide treatment recommendations.</li><li>Unknown indicators are omitted from their likelihood contributions, rather than coded as absent. Interpret incomplete profiles in the context of the available assessments.</li><li>A maximum posterior probability &lt;0.70 indicates lower assignment certainty. This threshold describes classification certainty; it is not a diagnostic performance cutoff.</li><li>Page calculations were checked against frozen-model outputs for 437 development and 86 external cases, with identical assignments. This verifies implementation agreement, not prospective clinical utility.</li></ul>
-  <p>Source: original frozen six-indicator K=3 model. Probability calculations use the same numerical bounds (10<sup>−10</sup>) as the previous external evaluation. Version: 2026-11-03.</p>
+  <p>This tool estimates phenotype class membership using a fixed three-class model developed in 437 patients with <i>PTPN11</i>-related Noonan syndrome. The six indicators were selected from 20 candidate phenotypes and capture part of the multisystem spectrum of Noonan syndrome.</p>
+  <ul>
+   <li>Class probabilities are calculated from the available indicators using the original model estimates. Documented absences contribute to the calculation, and unknown indicators are omitted.</li>
+   <li>A maximum posterior probability below 0.70 flags lower certainty in the class assignment.</li>
+   <li>The calculator reproduced the original model’s class assignments for all 437 development cases and 86 external cases.</li>
+   <li>The assigned profile can help focus bedside assessment and follow-up alongside standard multisystem evaluation and clinical judgment.</li>
+  </ul>
  </div></details>
- <footer><span>Six-indicator latent class model · Research implementation</span><span>No patient identifiers collected</span></footer>
+ <footer><span>Calculator version: 2026-11-05</span></footer>
 </main>
 <script>
 'use strict';
@@ -77,9 +81,21 @@ const FEATURES=[
  {id:'neurodevelopmental_abnormality',cn:'Neurodevelopmental abnormality',en:''}
 ];
 const PROFILES=[
- {title:'Less conspicuous classic features',description:'Classic facial and thoracic features are less conspicuous. This profile is more sensitive to age restriction and is heterogeneous; it does not imply milder disease or a fixed cardiomyopathy risk.',focus:'Interpret the assignment alongside age, documented findings, and data completeness; reassess the phenotype during follow-up.'},
- {title:'Classic facies–short stature profile',description:'Classic facial features and short stature form a prominent combination; growth impairment is a key feature of this profile.',focus:'Give attention to growth assessment alongside other system findings. Class membership alone is not an indication for GH treatment.'},
- {title:'Cardiothoracic profile',description:'Characterized by pulmonary valve stenosis and chest deformity; the estimated probability of short stature was near zero in the primary model.',focus:'Give attention to documented cardiac and thoracic findings. The current match does not predict subsequent growth.'}
+  {
+    "title": "Low phenotypic burden",
+    "description": "Characterized by fewer or less prominent classic Noonan syndrome features, particularly facial and thoracic abnormalities. This profile is more heterogeneous and age-sensitive than the profiles of Classes 2 and 3.",
+    "focus": "Reassess growth and neurodevelopment during follow-up, especially in younger children, and continue routine cardiovascular surveillance."
+  },
+  {
+    "title": "Classic facies–short stature profile",
+    "description": "Characteristic facial features and short stature commonly occurred together.",
+    "focus": "Monitor height trajectory and growth velocity during follow-up."
+  },
+  {
+    "title": "Cardiothoracic profile",
+    "description": "Pulmonary valve stenosis and chest deformity were common, and characteristic facial features were also frequently observed.",
+    "focus": "Monitor documented cardiac and chest wall findings during follow-up."
+  }
 ];
 const MODEL={
  priors:[0.216340491471176,0.607504021234248,0.176155487294576],
@@ -139,7 +155,7 @@ function report(){
  const rows=['PTPN11 frozen six-indicator model: class assignment',''];FEATURES.forEach((f,i)=>rows.push(f.cn+': '+(currentStatuses[i]===2?'Yes':currentStatuses[i]===1?'No':'Unknown')));
  rows.push('','Recorded indicators: '+current.observed+'/6','Most likely phenotype profile：Class '+current.class,'Maximum posterior probability：'+(current.maximum*100).toFixed(3)+'%','Profile: '+PROFILES[current.class-1].title,'Profile interpretation: '+PROFILES[current.class-1].description,'Clinical focus: '+PROFILES[current.class-1].focus);
  current.probabilities.forEach((p,i)=>rows.push('Class '+(i+1)+' posterior probability: '+(p*100).toFixed(3)+'%'));
- rows.push('Assignment certainty: '+(current.maximum>=.7?'Maximum posterior probability≥0.70':'Maximum posterior probability<0.70'),'',...(current.maximum<.7?['Assignment certainty is low. Consider all three probabilities; the profile interpretation is provisional.']:[]),'Clinical note: Class assignment summarizes the current phenotype pattern and may help focus assessment. It does not replace standard multisystem assessment and surveillance for Noonan syndrome or determine treatment.','This result supports research phenotype classification. Unknown indicators were not treated as absent.','Model: original frozen six-indicator K=3 model. Page version: 2026-11-03.');return rows.join('\n');
+ rows.push('Assignment certainty: '+(current.maximum>=.7?'Maximum posterior probability≥0.70':'Maximum posterior probability<0.70'),'',...(current.maximum<.7?['Assignment certainty is low. Consider all three probabilities; the profile interpretation is provisional.']:[]),'Clinical note: The assigned profile can help clinicians identify which findings to review at the bedside and revisit during follow-up. It should be interpreted alongside standard multisystem assessment and surveillance for Noonan syndrome, using clinical judgment.','This result supports research phenotype classification. Unknown indicators were not treated as absent.','Calculator version: 2026-11-05');return rows.join('\n');
 }
 $('copy').addEventListener('click',async()=>{const text=report();try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const a=document.createElement('textarea');a.value=text;document.body.append(a);a.select();if(!document.execCommand('copy'))throw new Error('copy');a.remove();}$('copy-status').textContent='Copied';}catch(e){$('copy-status').textContent='Copy unavailable; use Download result';}});
 $('download').addEventListener('click',()=>{const blob=new Blob([report()],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PTPN11_classification_result.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
